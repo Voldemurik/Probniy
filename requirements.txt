@@ -1,0 +1,11 @@
+# Зависимости для serverless-функции на Vercel (api/index.py).
+# Держать в соответствии с backend/requirements.txt (без uvicorn и pytest — на Vercel они не нужны).
+fastapi==0.115.6
+python-multipart==0.0.20
+pydantic==2.10.4
+pandas==2.2.3
+numpy>=1.26.0,<2.0.0
+gigachat>=0.1.0
+pdfplumber>=0.11.0
+httpx==0.28.1
+python-dotenv>=1.0.0

@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>ИИ-ассистент</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+
+    <style>
+
+        /* =====================================================
+           ЦВЕТОВЫЕ ТОКЕНЫ — ТЁМНАЯ ТЕМА (по умолчанию)
+           ===================================================== */
+
+        :root {
+            --bg:             #0d0b08;
+            --surface:        #141210;
+            --surface-2:      #1e1b17;
+            --border:         #272420;
+            --border-2:       #36322c;
+            --text:           #ede8e0;
+            --text-muted:     #6e6760;
+            --accent:         #c07828;
+            --accent-dim:     rgba(192, 120, 40, 0.14);
+            --accent-light:   #d4903a;
+        }
+
+        /* =====================================================
+           ЦВЕТОВЫЕ ТОКЕНЫ — СВЕТЛАЯ ТЕМА
+           ===================================================== */
+
+        [data-theme="light"] {
+            --bg:             #faf7f2;
+            --surface:        #f0ece4;
+            --surface-2:      #e6e0d5;
+            --border:         #ddd6c8;
+            --border-2:       #cac2b0;
+            --text:           #1c1815;
+            --text-muted:     #7a7168;
+            --accent:         #b45309;
+            --accent-dim:     rgba(180, 83, 9, 0.10);
+            --accent-light:   #c96515;
+        }
+
+
+        /* =====================================================
+           СБРОС И НАСТРОЙКИ СТРАНИЦЫ
+           ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                'Segoe UI',
+                Roboto,
+                sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.25s, color 0.25s;
+        }
+
+
+        /* =====================================================
+           КОНТЕЙНЕР ЧАТА
+           ===================================================== */
+
+        .chat-container {
+            width: 100%;
+            height: 100%;
+
+            background: var(--bg);
+
+            display: flex;
+            flex-direction: column;
+
+            overflow: hidden;
+
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+
+        /* =====================================================
+           ШАПКА
+           ===================================================== */
+
+        .chat-header {
+            background: var(--bg);
+            color: var(--text);
+
+            padding: 24px 32px;
+
+            font-size: 20px;
+            font-weight: 500;
+
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+
+            flex-shrink: 0;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-header .avatar {
+            width: 42px;
+            height: 42px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--accent);
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--border-2);
+            color: var(--text-muted);
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .clear-btn {
+            background: transparent;
+
+            border: none;
+
+            color: var(--text-muted);
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            transition: color 0.2s;
+        }
+
+        .clear-btn:hover {
+            color: var(--text);
+        }
+
+
+        /* =====================================================
+           ОБЛАСТЬ СООБЩЕНИЙ
+           ===================================================== */
+
+        .messages {
+            flex: 1;
+
+            padding: 32px 44px;
+
+            overflow-y: auto;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 18px;
+
+            background: var(--bg);
+        }
+
+
+        /* =====================================================
+           СООБЩЕНИЯ
+           ===================================================== */
+
+        .message {
+            max-width: 65%;
+
+            padding: 16px 20px;
+
+            border-radius: 18px;
+
+            font-size: 16px;
+            line-height: 1.5;
+
+            word-wrap: break-word;
+
+            animation: fadeIn 0.25s ease;
+
+            color: var(--text);
+        }
+
+        .message.user {
+            align-self: flex-end;
+
+            background: var(--surface);
+
+            border: 1px solid var(--accent-dim);
+            border-bottom: 1px solid var(--accent);
+            border-bottom-right-radius: 6px;
+
+            box-shadow: none;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+
+            border-bottom-left-radius: 6px;
+        }
+
+        .message .time {
+            font-size: 11px;
+
+            color: var(--text-muted);
+
+            margin-top: 6px;
+
+            text-align: right;
+        }
+
+        .message .text {
+
+            white-space: pre-wrap; 
+
+        }
+        
+        .message.thinking .text {
+
+            color: #8b8b8f; font-style: italic;
+
+        }
+
+
+
+        /* =====================================================
+           АНИМАЦИЯ СООБЩЕНИЙ
+           ===================================================== */
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* =====================================================
+           БЫСТРЫЕ ПРЕДЛОЖЕНИЯ
+           ===================================================== */
+
+        .suggestions {
+
+            display: none;
+
+            gap: 10px;
+
+            padding: 14px 44px 12px;
+
+            background: var(--bg);
+
+            overflow-x: auto;
+
+            flex-shrink: 0;
+
+            scrollbar-width: none;
+        }
+
+        .suggestions::-webkit-scrollbar {
+            display: none;
+        }
+
+
+        /* =====================================================
+           КНОПКИ ПРЕДЛОЖЕНИЙ
+           ===================================================== */
+
+        .suggestion-btn {
+
+            flex-shrink: 0;
+
+            padding: 10px 18px;
+
+            border: 1px solid var(--border-2);
+
+            border-radius: 20px;
+
+            background: transparent;
+
+            color: var(--text-muted);
+
+            font-size: 14px;
+
+            font-weight: 400;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s,
+                border-color 0.2s,
+                color 0.2s,
+                transform 0.1s;
+        }
+
+        .suggestion-btn:hover {
+
+            background: var(--accent-dim);
+
+            border-color: var(--accent);
+
+            color: var(--accent-light);
+        }
+
+        .suggestion-btn:active {
+            transform: scale(0.97);
+        }
+
+
+        /* =====================================================
+           ПАНЕЛЬ ЗАГРУЗКИ ФАЙЛА
+           ===================================================== */
+
+        .input-area {
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 18px 44px 28px;
+
+            gap: 12px;
+
+            background: var(--bg);
+
+            border-top: 1px solid var(--border);
+
+            flex-shrink: 0;
+        }
+
+
+        /* =====================================================
+           КНОПКИ ДЕЙСТВИЙ
+           ===================================================== */
+
+        .upload-btn,
+        .send-btn,
+        .cancel-btn {
+
+            background: var(--surface);
+
+            color: var(--text);
+
+            border: 1px solid var(--border-2);
+
+            padding: 14px 26px;
+
+            border-radius: 16px;
+
+            font-size: 15px;
+
+            font-weight: 500;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s,
+                border-color 0.2s,
+                color 0.2s;
+
+            white-space: nowrap;
+        }
+
+        .send-btn {
+            display: none;
+            background: var(--accent-dim);
+            border-color: var(--accent);
+            color: var(--accent-light);
+        }
+
+        .cancel-btn {
+            display: none;
+        }
+
+        .upload-btn:hover {
+            background: var(--surface-2);
+            border-color: var(--border-2);
+        }
+
+        .send-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .cancel-btn:hover {
+            background: var(--surface-2);
+        }
+
+        .upload-btn:active,
+        .send-btn:active,
+        .cancel-btn:active {
+            transform: scale(0.96);
+        }
+
+
+        /* =====================================================
+           НАЗВАНИЕ ВЫБРАННОГО ФАЙЛА
+           ===================================================== */
+
+        .file-name {
+
+            color: var(--text-muted);
+
+            font-size: 14px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        /* =====================================================
+           АДАПТАЦИЯ ДЛЯ НЕБОЛЬШИХ ЭКРАНОВ
+           ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .suggestions {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .suggestion-btn {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+
+            .input-area {
+                padding: 10px 12px 12px;
+                flex-wrap: wrap;
+            }
+
+            .upload-btn,
+            .send-btn,
+            .cancel-btn {
+                padding: 12px 16px;
+            }
+
+        }
+
+
+        /* =====================================================
+           ЭКРАН ЗАГРУЗКИ
+           ===================================================== */
+
+        .loading-screen {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 9999;
+
+            background: #000000;
+
+            color: #ffffff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            user-select: none;
+            -webkit-user-select: none;
+
+            transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        .loading-screen.hide {
+            transform: translateY(-100%);
+        }
+
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .loading-mark {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 28px;
+
+            opacity: 0;
+            animation: ls-fade-up 0.6s ease forwards 0.1s;
+        }
+
+        .loading-app-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #5a5550;
+            margin-bottom: 20px;
+
+            opacity: 0;
+            animation: ls-fade-up 0.6s ease forwards 0.25s;
+        }
+
+        .loading-tagline {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 36px;
+            font-weight: 400;
+            line-height: 1.2;
+            color: #f0ece6;
+            letter-spacing: -0.01em;
+            max-width: 320px;
+
+            opacity: 0;
+            animation: ls-fade-up 0.7s ease forwards 0.4s;
+        }
+
+        .loading-bar-wrap {
+            width: 48px;
+            height: 1px;
+            background: #1e1b17;
+            margin-top: 40px;
+            overflow: hidden;
+
+            opacity: 0;
+            animation: ls-fade-up 0.5s ease forwards 0.6s;
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: #c07828;
+            animation: ls-progress 1s ease forwards 0.7s;
+        }
+
+        @keyframes ls-fade-up {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes ls-progress {
+            from { width: 0%; }
+            to   { width: 100%; }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         ЭКРАН ЗАГРУЗКИ
+         ===================================================== -->
+
+    <div
+        class="loading-screen"
+        id="loadingScreen"
+    >
+
+        <div class="loading-content">
+
+            <svg class="loading-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="0.5" y="0.5" width="39" height="39" rx="7.5" stroke="#3a2e1e"/>
+                <polyline points="8,28 16,20 22,24 32,13" stroke="#c07828" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="32" cy="13" r="2" fill="#d4903a"/>
+            </svg>
+
+            <div class="loading-app-name">ИИ-ассистент</div>
+
+            <div class="loading-tagline">Найдите все ваши подписки</div>
+
+            <div class="loading-bar-wrap">
+                <div class="loading-bar"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ОСНОВНОЙ КОНТЕЙНЕР ЧАТА
+         ===================================================== -->
+
+    <div class="chat-container">
+
+
+        <!-- =====================================================
+             ШАПКА
+             ===================================================== -->
+
+        <div class="chat-header">
+
+            <div class="avatar">
+                💬
+            </div>
+
+            <span>
+                ИИ-ассистент
+            </span>
+
+            <div class="header-actions">
+
+                <button class="theme-btn" id="themeToggle" title="Сменить тему">
+                    <svg id="themeIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 1v1M8 14v1M1 8H2M14 8h1M3.05 3.05l.7.7M12.24 12.24l.7.7M3.05 12.95l.7-.7M12.24 3.76l.7-.7M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    </svg>
+                </button>
+
+                <button
+                    class="clear-btn"
+                    id="clearHistory"
+                >
+                    ✕ очистить
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             ОБЛАСТЬ СООБЩЕНИЙ
+             ===================================================== -->
+
+        <div
+            class="messages"
+            id="messageContainer"
+        ></div>
+
+
+        <!-- =====================================================
+             БЫСТРЫЕ ПРЕДЛОЖЕНИЯ
+
+             Появляются только после отправки файла.
+             ===================================================== -->
+
+        <div
+            class="suggestions"
+            id="suggestions"
+        >
+
+            <button class="suggestion-btn">
+                Мои активные подписки
+            </button>
+
+            <button class="suggestion-btn">
+                Расходы за 1 месяц
+            </button>
+
+            <button class="suggestion-btn">
+                Расходы за 3 месяца
+            </button>
+
+            <button class="suggestion-btn">
+                Расходы за 6 месяцев
+            </button>
+
+            <button class="suggestion-btn">
+                Расходы за 12 месяцев
+            </button>
+
+            <button class="suggestion-btn">
+                Рекомендации
+            </button>
+
+            <button class="suggestion-btn">
+                Скачать отчёт .txt
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             ПАНЕЛЬ ЗАГРУЗКИ ФАЙЛА
+             ===================================================== -->
+
+        <div class="input-area">
+
+
+            <!-- Скрытый стандартный элемент выбора файла. -->
+
+            <input
+                type="file"
+                id="fileInput"
+                hidden
+            />
+
+
+            <!-- Кнопка, которая открывает выбор файла. -->
+
+            <button
+                class="upload-btn"
+                id="uploadButton"
+            >
+
+                Загрузить файл
+
+            </button>
+
+
+            <!-- Кнопка отправки выбранного файла. -->
+
+            <button
+                class="send-btn"
+                id="sendButton"
+            >
+
+                Отправить
+
+            </button>
+
+            <!-- Кнопка отмены выбранного файла. --> 
+             
+            <button 
+                class="cancel-btn" 
+                id="cancelButton" 
+            > 
+                
+            
+                Отменить 
+            
+            </button>
+
+
+            <!-- Здесь отображается имя выбранного файла. -->
+
+            <span
+                class="file-name"
+                id="fileName"
+            ></span>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        (function () {
+
+            /*
+             * Весь JavaScript находится внутри IIFE,
+             * чтобы не создавать лишние глобальные переменные.
+             */
+
+
+            /* =====================================================
+               ТЕМА (СВЕТЛАЯ / ТЁМНАЯ)
+               ===================================================== */
+
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon   = document.getElementById('themeIcon');
+
+            const MOON_SVG = '<path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a.5.5 0 0 0-.6-.6A6.5 6.5 0 1 0 14.1 10.1a.5.5 0 0 0-.6-.6Z" fill="currentColor"/>';
+            const SUN_SVG  = '<path d="M8 1v1M8 14v1M1 8H2M14 8h1M3.05 3.05l.7.7M12.24 12.24l.7.7M3.05 12.95l.7-.7M12.24 3.76l.7-.7M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>';
+
+            function applyTheme(theme) {
+
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.innerHTML = MOON_SVG;
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.innerHTML = SUN_SVG;
+                }
+
+                localStorage.setItem('theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+                applyTheme(current === 'light' ? 'dark' : 'light');
+            });
+
+
+            /* =====================================================
+               ЭКРАН ЗАГРУЗКИ
+               ===================================================== */
+
+            const loadingScreen =
+                document.getElementById(
+                    'loadingScreen'
+                );
+
+            window.addEventListener(
+                'load',
+                () => {
+
+                    setTimeout(
+                        () => {
+
+                            loadingScreen
+                                .classList
+                                .add('hide');
+
+                        },
+                        1700
+                    );
+
+                }
+            );
+
+
+            /* =====================================================
+               ОСНОВНЫЕ ЭЛЕМЕНТЫ
+               ===================================================== */
+
+            const messagesContainer =
+                document.getElementById(
+                    'messageContainer'
+                );
+
+            const clearBtn =
+                document.getElementById(
+                    'clearHistory'
+                );
+
+
+            /* =====================================================
+               ЭЛЕМЕНТЫ ЗАГРУЗКИ ФАЙЛА
+               ===================================================== */
+
+            const fileInput =
+                document.getElementById(
+                    'fileInput'
+                );
+
+            const uploadButton =
+                document.getElementById(
+                    'uploadButton'
+                );
+
+            const sendButton =
+                document.getElementById(
+                    'sendButton'
+                );
+            
+            const cancelButton =
+                document.getElementById(
+                    'cancelButton'
+                );
+
+            const fileName =
+                document.getElementById(
+                    'fileName'
+                );
+
+
+            /* =====================================================
+               БЫСТРЫЕ ПРЕДЛОЖЕНИЯ
+               ===================================================== */
+
+            const suggestions =
+                document.getElementById(
+                    'suggestions'
+                );
+
+            const suggestionButtons =
+                document.querySelectorAll(
+                    '.suggestion-btn'
+                );
+
+
+            /* =====================================================
+               LOCAL STORAGE
+
+               Используется для сохранения истории чата
+               между перезагрузками страницы.
+               ===================================================== */
+
+            const STORAGE_KEY =
+                'chat_messages';
+
+
+            /* =====================================================
+               ЗАГРУЗКА ИСТОРИИ
+               ===================================================== */
+
+            function loadMessages() {
+
+                const stored =
+                    localStorage.getItem(
+                        STORAGE_KEY
+                    );
+
+                if (stored) {
+
+                    try {
+
+                        const messages =
+                            JSON.parse(
+                                stored
+                            );
+
+                        messages.forEach(
+                            msg => {
+
+                                renderMessage(
+                                    msg.text,
+                                    msg.type,
+                                    msg.timestamp,
+                                    false
+                                );
+
+                            }
+                        );
+
+                    } catch (e) {
+
+                        /*
+                         * Если сохранённые данные повреждены,
+                         * они не должны ломать работу чата.
+                         */
+
+                        console.warn(
+                            'Не удалось разобрать сохранённые сообщения'
+                        );
+
+                    }
+
+                }
+
+            }
+
+
+            /* =====================================================
+               СОХРАНЕНИЕ ИСТОРИИ
+               ===================================================== */
+
+            function saveMessages() {
+
+                const items =
+                    messagesContainer
+                        .querySelectorAll(
+                            '.message'
+                        );
+
+                const messages = [];
+
+
+                items.forEach(
+                    el => {
+
+                        const text =
+                            el.querySelector(
+                                '.text'
+                            )?.textContent || '';
+
+
+                        const type =
+                            el.classList
+                                .contains('user')
+                                ? 'user'
+                                : 'bot';
+
+
+                        const time =
+                            el.querySelector(
+                                '.time'
+                            )?.textContent || '';
+
+
+                        messages.push({
+
+                            text: text,
+
+                            type: type,
+
+                            timestamp: time
+
+                        });
+
+                    }
+                );
+
+
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(
+                        messages
+                    )
+                );
+
+            }
+
+
+            /* =====================================================
+               ОТОБРАЖЕНИЕ СООБЩЕНИЯ
+               ===================================================== */
+
+            function renderMessage(
+                text,
+                type,
+                timestamp,
+                save = true
+            ) {
+
+                const msgDiv =
+                    document.createElement(
+                        'div'
+                    );
+
+                msgDiv.className =
+                    `message ${type}`;
+
+
+                /* Текст сообщения. */
+
+                const textSpan =
+                    document.createElement(
+                        'div'
+                    );
+
+                textSpan.className =
+                    'text';
+
+                textSpan.textContent =
+                    text;
+
+
+                msgDiv.appendChild(
+                    textSpan
+                );
+
+
+                /* Время сообщения. */
+
+                const timeSpan =
+                    document.createElement(
+                        'div'
+                    );
+
+                timeSpan.className =
+                    'time';
+
+
+                const now =
+                    timestamp ||
+                    new Date()
+                        .toLocaleTimeString(
+                            [],
+                            {
+                                hour:
+                                    '2-digit',
+
+                                minute:
+                                    '2-digit'
+                            }
+                        );
+
+
+                timeSpan.textContent =
+                    now;
+
+
+                msgDiv.appendChild(
+                    timeSpan
+                );
+
+
+                /* Добавляем сообщение в чат. */
+
+                messagesContainer.appendChild(
+                    msgDiv
+                );
+
+
+                /* Прокручиваем чат к последнему сообщению. */
+
+                messagesContainer.scrollTop =
+                    messagesContainer
+                        .scrollHeight;
+
+
+                /*
+                 * save = true означает, что сообщение нужно
+                 * сохранить в LocalStorage.
+                 *
+                 * save = false используется, например,
+                 * при загрузке уже сохранённой истории
+                 * или для временного сообщения после очистки.
+                 */
+
+                if (save) {
+
+                    saveMessages();
+
+                }
+
+            }
+
+
+            /* =====================================================
+               СООБЩЕНИЕ ПОЛЬЗОВАТЕЛЯ
+               ===================================================== */
+
+            function addUserMessage(text) {
+
+                if (!text.trim()) {
+
+                    return;
+
+                }
+
+
+                const now =
+                    new Date()
+                        .toLocaleTimeString(
+                            [],
+                            {
+                                hour:
+                                    '2-digit',
+
+                                minute:
+                                    '2-digit'
+                            }
+                        );
+
+
+                renderMessage(
+                    text.trim(),
+                    'user',
+                    now,
+                    true
+                );
+
+            }
+
+
+            /* =====================================================
+               КНОПКА "ЗАГРУЗИТЬ ФАЙЛ"
+               ===================================================== */
+
+            uploadButton.addEventListener(
+                'click',
+                () => {
+
+                    /*
+                     * Открываем стандартное окно
+                     * выбора файла браузера.
+                     */
+
+                    fileInput.click();
+
+                }
+            );
+
+
+            /* =====================================================
+               ПОСЛЕ ВЫБОРА ФАЙЛА
+               ===================================================== */
+
+            fileInput.addEventListener(
+                'change',
+                () => {
+
+                    if (
+                        fileInput.files.length > 0
+                    ) {
+
+                        const file = fileInput.files[0]; 
+                        currentFile = file;
+
+
+                        /* Показываем название выбранного файла. */
+
+                        fileName.textContent =
+                            file.name;
+
+
+                        /* Показываем кнопку "Отправить" и "Отменить". */
+
+                        sendButton.style.display =
+                            'block';
+
+                        cancelButton.style.display =
+                            'block';
+
+
+                        /*
+                         * Если пользователь выбрал новый файл,
+                         * его снова можно отправить.
+                         */
+
+                        sendButton.disabled =
+                            false;
+
+                    }
+
+                }
+            );
+
+
+            /* =====================================================
+               БЛОК СВЯЗИ С БЕКЕНДОМ (обновлено 06.09)
+               Один ответ ассистента = три сообщения подряд:
+               1) расходы по типам и общий расход,
+               2) подписки карточками (цена, последнее и следующее
+                  списание, потрачено за период, экономия за год),
+               3) рекомендации по подпискам от GigaChat.
+            ===================================================== */
+
+            // Адрес бэкенда. '' — страницу отдаёт сам бэкенд (Vercel / uvicorn), путь относительный.
+            // Для отладки можно указать другой адрес прямо в URL: app.html?api=http://localhost:8000
+            const API = (new URLSearchParams(location.search).get('api') || '').replace(/\/+$/, '');
+
+            let currentFile = null, analysis = null, recommendations = '';
+
+            const PERIOD_RU = { '1m': '1 месяц', '3m': '3 месяца', '6m': '6 месяцев', '1y': '12 месяцев', 'ytd': 'с начала года', 'all': 'весь период' };
+            const PERIOD_ZA = { '1m': 'за 1 месяц', '3m': 'за 3 месяца', '6m': 'за 6 месяцев', '1y': 'за 12 месяцев', 'ytd': 'с начала года', 'all': 'за весь период' };
+            const FREQ_RU   = { weekly: 'в неделю', biweekly: 'раз в 2 недели', monthly: 'в месяц', quarterly: 'в квартал', yearly: 'в год' };
+
+            const fmt = n => Math.round(Number(n) || 0).toLocaleString('ru-RU') + ' ₽';
+            const fmtDate = iso => {                       // '2026-08-13' → '13.08.2026'
+                if (!iso) return '—';
+                const [y, m, d] = String(iso).split('-');
+                return (d && m && y) ? `${d}.${m}.${y}` : String(iso);
+            };
+            const za = a => PERIOD_ZA[a.period_analyzed] || ('за ' + a.period_analyzed);
+            const subsSpent = a => a.subscriptions.reduce((s, x) => s + (Number(x.actual_spent_in_period) || 0), 0);
+            const subsYear  = a => a.subscriptions.reduce((s, x) => s + (Number(x.yearly_savings ?? x.yearly_cost) || 0), 0);
+
+            function showThinking(text) {              // временное «думаю…», потом el.remove()
+                const el = document.createElement('div');
+                el.className = 'message bot thinking';
+                const t = document.createElement('div'); t.className = 'text'; t.textContent = text;
+                el.appendChild(t); messagesContainer.appendChild(el);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                return el;
+            }
+
+            async function apiAnalyze(file, period) {  // POST /api/v1/analyze: файл + период → сводка
+                const form = new FormData();             // FormData — «форма» с файлом для отправки
+                form.append('file', file);
+                form.append('period', period);
+                const res = await fetch(API + '/api/v1/analyze', { method: 'POST', body: form });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.detail || ('Сервер ответил ошибкой ' + res.status));
+                }
+                return res.json();
+            }
+
+            async function apiReport(a) {              // POST /api/v1/report: сводка → текст рекомендаций
+                const res = await fetch(API + '/api/v1/report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        subscriptions: a.subscriptions,
+                        total_spent: a.spending_overview.total_spent,
+                        total_income: a.spending_overview.total_income,
+                        period: a.period_analyzed
+                    })
+                });
+                if (!res.ok) throw new Error('Не удалось получить рекомендации (' + res.status + ')');
+                const raw = await res.text();
+                try { return String(JSON.parse(raw)); } catch (e) { return raw; }  // бэкенд отдаёт строку в JSON-кавычках
+            }
+
+            // Блок 1 — расходы по типам. Не-подписки только общими суммами (кейс про подписки).
+            function textExpenses(a) {
+                const o = a.spending_overview;
+                const subs = subsSpent(a);
+                const other = Math.max(0, o.total_spent - subs - o.total_transfers_out);
+                return `Общий расход ${za(a)}: ${fmt(o.total_spent)}.\n` +
+                       `• Подписки: ${fmt(subs)} (${a.subscriptions.length} шт.)\n` +
+                       `• Переводы (в том числе себе): ${fmt(o.total_transfers_out)}\n` +
+                       `• Остальные расходы (покупки, наличные, регулярные платежи): ${fmt(other)}`;
+            }
+
+            // Блок 2 — подписки карточками.
+            function textSubscriptions(a) {
+                if (!a.subscriptions.length) return `Активных подписок ${za(a)} не найдено.`;
+                const cards = a.subscriptions.map((s, i) =>
+                    `${i + 1}. ${s.service_name}\n` +
+                    `   Цена подписки: ${fmt(s.charge_amount ?? s.monthly_cost)} ${FREQ_RU[s.frequency] || 'в месяц'}\n` +
+                    `   Последнее списание: ${fmtDate(s.last_charge)}\n` +
+                    `   Следующее списание: ${fmtDate(s.next_charge)}\n` +
+                    `   Уже потрачено ${za(a)}: ${fmt(s.actual_spent_in_period)} (списаний: ${s.charges_count || s.transactions.length})\n` +
+                    `   Экономия за год при отказе: ${fmt(s.yearly_savings ?? s.yearly_cost)}` +
+                    (s.cancellation_guide ? `\n   Как отменить: ${s.cancellation_guide}` : ''));
+                return `Найдено подписок: ${a.subscriptions.length}. Потрачено на них ${za(a)}: ${fmt(subsSpent(a))}.\n\n` +
+                       cards.join('\n\n') +
+                       `\n\nЕсли отказаться от всех подписок — экономия ${fmt(subsYear(a))} в год.`;
+            }
+
+            // Блок 3 — рекомендации только по подпискам (GigaChat, при недоступности — правила бэкенда).
+            async function replyRecommendations(a) {
+                const thinking = showThinking('Готовлю рекомендации по подпискам (10–15 секунд)…');
+                try {
+                    recommendations = (await apiReport(a)).trim();
+                    renderMessage('Рекомендации по подпискам:\n' + recommendations, 'bot', null, true);
+                } catch (e) {
+                    renderMessage('Не удалось получить рекомендации: ' + e.message, 'bot', null, true);
+                } finally {
+                    thinking.remove();
+                }
+            }
+
+            // Полный ответ ассистента на загруженную выписку.
+            async function replyFull(a) {
+                renderMessage(textExpenses(a), 'bot', null, true);
+                renderMessage(textSubscriptions(a), 'bot', null, true);
+                await replyRecommendations(a);
+            }
+
+            function buildTxt(a, rec) {                // TXT-отчёт: те же три блока
+                return [
+                    'ПОДПИСКИ-СКАНЕР — ОТЧЁТ ПО ВЫПИСКЕ',
+                    'Файл: ' + (currentFile ? currentFile.name : '—') + ', период: ' + (PERIOD_RU[a.period_analyzed] || a.period_analyzed),
+                    'Сформировано: ' + new Date().toLocaleString('ru-RU'), '',
+                    '1. РАСХОДЫ', textExpenses(a), '',
+                    '2. ПОДПИСКИ', textSubscriptions(a), '',
+                    '3. РЕКОМЕНДАЦИИ', rec || '(рекомендации не запрашивались)'
+                ].join('\n');
+            }
+
+            function downloadTxt(text, name) {         // Blob — «файл в памяти браузера», отдаём его на скачивание
+                const blob = new Blob(['﻿' + text], { type: 'text/plain;charset=utf-8' }); // BOM, чтобы Блокнот показал кириллицу
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url; link.download = name;
+                document.body.appendChild(link); link.click(); link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }
+
+            async function handleSuggestion(label) {
+                if (!analysis) { renderMessage('Сначала загрузите и отправьте выписку.', 'bot', null, true); return; }
+                try {
+                    if (label === 'Мои активные подписки' || label === 'Активные подписки') {
+                        renderMessage(textSubscriptions(analysis), 'bot', null, true);
+                    } else if (label.startsWith('Расходы за')) {
+                        const period = label.includes('1 месяц') ? '1m' : label.includes('3 месяца') ? '3m'
+                                     : label.includes('6 месяцев') ? '6m' : '1y';
+                        if (period !== analysis.period_analyzed) {
+                            const thinking = showThinking('Пересчитываю ' + PERIOD_ZA[period] + ' (10–15 секунд)…');
+                            try { analysis = await apiAnalyze(currentFile, period); }
+                            finally { thinking.remove(); }
+                            await replyFull(analysis);
+                        } else {
+                            renderMessage(textExpenses(analysis), 'bot', null, true);
+                        }
+                    } else if (label === 'Рекомендации') {
+                        await replyRecommendations(analysis);
+                    } else if (label === 'Скачать отчёт .txt') {
+                        downloadTxt(buildTxt(analysis, recommendations), 'otchet_podpiski.txt');
+                        renderMessage('Отчёт сохранён файлом otchet_podpiski.txt.', 'bot', null, true);
+                    } else {
+                        renderMessage('Этот сценарий пока не подключён.', 'bot', null, true);
+                    }
+                } catch (e) {
+                    renderMessage('Ошибка: ' + e.message, 'bot', null, true);
+                }
+            }
+
+            /* =====================================================
+               КНОПКА "ОТПРАВИТЬ"
+            ===================================================== */
+            sendButton.addEventListener(
+                'click',
+                async () => {
+                    if (!currentFile || sendButton.disabled) return;
+                    addUserMessage(`Файл "${currentFile.name}" загружен.`);
+                    sendButton.disabled = true;
+                    const thinking = showThinking('Анализирую выписку через GigaChat, это займёт 10–15 секунд…');
+                    try {
+                        analysis = await apiAnalyze(currentFile, '6m');
+                        recommendations = '';
+                        thinking.remove();
+                        renderMessage(`Готово: выписка ${za(analysis)} проанализирована, найдено подписок: ${analysis.subscriptions.length}. ` +
+                                      `Ниже — расходы по типам, подписки и рекомендации. Кнопками можно пересчитать за другой период.`, 'bot', null, true);
+                        suggestions.style.display = 'flex';
+                        await replyFull(analysis);
+                    } catch (e) {
+                        thinking.remove();
+                        renderMessage('Не удалось проанализировать файл: ' + e.message, 'bot', null, true);
+                        sendButton.disabled = false;          // можно попробовать ещё раз
+                    }
+                }
+            );
+
+            /* ===================================================== 
+                КНОПКА "ОТМЕНИТЬ" 
+                Удаляет выбранный файл до его отправки. 
+                ===================================================== */
+
+            cancelButton.addEventListener(
+                'click',
+                () => { 
+                    
+                    /* 
+                    * Очищаем выбранный файл 
+                    * из элемента input. 
+                    */
+                   
+                    fileInput.value = 
+                        ''; 
+
+
+                    /* 
+                    * Убираем отображение имени файла. 
+                    */ 
+                    
+                    fileName.textContent = 
+                        ''; 
+                        
+                    /* 
+                    * Скрываем кнопки "Отправить" 
+                    * и "Отменить". 
+                    */ 
+                   
+                    sendButton.style.display = 
+                        'none'; 
+                    
+                    cancelButton.style.display = 
+                        'none'; 
+                        
+                    /* 
+                    * Если файл был отменён после предыдущей 
+                    * отправки, быстрые предложения скрываются. 
+                    */ 
+                    
+                    suggestions.style.display = 
+                        'none'; 
+                    
+                }
+            );
+
+
+            /* =====================================================
+               БЫСТРЫЕ ПРЕДЛОЖЕНИЯ
+
+               Нажатие отображает выбранный вариант
+               как сообщение пользователя.
+
+               Автоматического ответа ассистента
+               на этом этапе нет.
+               ===================================================== */
+
+
+            suggestionButtons.forEach(button => {
+
+            button.addEventListener('click', () => {
+
+                const label = button.textContent.trim();
+
+                addUserMessage(label);
+
+                handleSuggestion(label);
+
+            });
+            });
+
+
+            /* =====================================================
+               ОЧИСТКА ИСТОРИИ
+               ===================================================== */
+
+            function clearHistory() {
+
+                if (
+                    confirm(
+                        'Удалить всю историю сообщений?'
+                    )
+                ) {
+
+                    /*
+                     * Полностью очищаем сообщения
+                     * на странице.
+                     */
+
+                    messagesContainer.innerHTML =
+                        '';
+
+
+                    /* Удаляем сохранённую историю. */
+
+                    localStorage.removeItem(
+                        STORAGE_KEY
+                    );
+
+
+                    /*
+                     * Это временное сообщение.
+                     * Оно специально НЕ сохраняется
+                     * в LocalStorage.
+                     */
+
+                    const welcome =
+                        'Привет! Я твой ии-помощник. Помогу проанализировать твои траты и увеличить доходы. Загрузите выписку из банка!';
+
+
+                    const now =
+                        new Date()
+                            .toLocaleTimeString(
+                                [],
+                                {
+                                    hour:
+                                        '2-digit',
+
+                                    minute:
+                                        '2-digit'
+                                }
+                            );
+
+
+                    renderMessage(
+                        welcome,
+                        'bot',
+                        now,
+                        false
+                    );
+
+                }
+
+            }
+
+
+            /* =====================================================
+               КНОПКА "ОЧИСТИТЬ"
+               ===================================================== */
+
+            clearBtn.addEventListener(
+                'click',
+                clearHistory
+            );
+
+
+            /* =====================================================
+               ЗАПУСК
+
+               Если история существует —
+               восстанавливаем её.
+
+               Если истории нет —
+               показываем первоначальное приветствие.
+               ===================================================== */
+
+            if (
+                localStorage.getItem(
+                    STORAGE_KEY
+                )
+            ) {
+
+                loadMessages();
+
+            } else {
+
+                const now =
+                    new Date()
+                        .toLocaleTimeString(
+                            [],
+                            {
+                                hour:
+                                    '2-digit',
+
+                                minute:
+                                    '2-digit'
+                            }
+                        );
+
+
+                renderMessage(
+                    'Привет! Я твой ии-помощник. Помогу проанализировать твои траты и увеличить доходы. Загрузите выписку из банка!',
+                    'bot',
+                    now,
+                    true
+                );
+
+            }
+
+
+        })();
+
+    </script>
+
+</body>
+
+</html>
