@@ -1,0 +1,581 @@
+# =========================
+# VERSION 1.3.2 (FIXED & TESTED)
+# =========================
+
+import io
+import re
+from collections import defaultdict
+from datetime import datetime
+from typing import List, Dict, Tuple
+
+import pandas as pd
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from pydantic import BaseModel
+
+
+app = FastAPI(
+    title="Подписки-сканер",
+    version="1.3.2",
+    description="Поиск регулярных подписок в банковской выписке",
+)
+
+
+MAX_FILE_SIZE = 10 * 1024 * 1024
+
+
+# ============================================================
+# БАЗА ЗНАНИЙ О СЕРВИСАХ
+# ============================================================
+
+KNOWN_SUBSCRIPTION_SERVICES = {
+    "VK Музыка",
+    "СберПрайм",
+    "Звук",
+    "Иви",
+    "START",
+    "PREMIER",
+    "OKKO",
+    "Учи.ру",
+    "КиноПоиск",
+    "Яндекс Диск",
+    "Яндекс Плюс",
+    "VK Cloud",
+    "Cloud Mail.ru",
+    "FITMOST",
+    "Apple Services",
+    "Netflix",
+    "Spotify",
+    "Apple Music",
+    "YouTube Premium",
+    "YouTube Music",
+    "Telegram Premium",
+    "ChatGPT",
+    "OpenAI",
+    "iCloud",
+    "Lesta Games",  # Добавлено для Игоря
+    "VK Play",      # Добавлено для Игоря
+}
+
+KNOWN_NON_SUBSCRIPTION_SERVICES = {
+    "Skillbox",
+    "Skillbox.ru",
+    "CLOUDPAYMENTS SKILLBOX",
+    "GeekBrains",
+    "SkillFactory",
+    "Нетология",
+}
+
+SUBSCRIPTION_MCC = {
+    5968, 5815, 5816, 5817, 5818,
+}
+
+NON_SUBSCRIPTION_MCC = {
+    5411, 5499, 5812, 5814, 4111, 4131, 5912, 5300, 6011,
+}
+
+
+# ============================================================
+# ИСКЛЮЧЕНИЯ
+# ============================================================
+
+EXCLUDED_CATEGORIES = {
+    "Продукты", "Транспорт", "Переводы", "Кэшбэк", "Маркетплейсы",
+    "Фастфуд", "Хобби", "Дом и ремонт", "Между своими счетами",
+    "Кафе", "Наличные", "Аптеки",
+}
+
+EXCLUDED_DESCRIPTION_PATTERNS = [
+    "снятие наличных", "банкомат", "atm", "cash withdrawal",
+    "перевод", "оплата по qr",
+]
+
+
+# ============================================================
+# ПАРАМЕТРЫ
+# ============================================================
+
+AMOUNT_TOLERANCE = 0.05
+
+PERIOD_RANGES = {
+    "weekly": (5, 9),
+    "biweekly": (12, 18),
+    "monthly": (25, 35),
+    "quarterly": (75, 105),
+}
+
+
+# ============================================================
+# ALIASES
+# ============================================================
+
+ALIASES = {
+    # VK
+    "vk music": "VK Музыка", "вк музыка": "VK Музыка",
+    "vk com music": "VK Музыка", "vk.com/music": "VK Музыка",
+    "vkplay": "VK Play", "vk play": "VK Play", "vk play plus": "VK Play",
+
+    # Sber
+    "sberprime": "СберПрайм", "сберпрайм": "СберПрайм",
+    "sber prime": "СберПрайм", "sber prime+": "СберПрайм",
+
+    # ZVUK
+    "zvuk": "Звук", "zvuk com": "Звук", "sberzvuk": "Звук",
+
+    # IVI
+    "ivi": "Иви", "ооо иви ру": "Иви",
+
+    # START
+    "start ru": "START", "ооо старт": "START", "start": "START",
+
+    # PREMIER
+    "premier": "PREMIER", "premier tv": "PREMIER", "premier one": "PREMIER",
+
+    # OKKO
+    "okko": "OKKO", "okko tv": "OKKO", "okko premium": "OKKO",
+
+    # KINOPOISK
+    "kinopoisk": "КиноПоиск", "kinopoisk hd": "КиноПоиск",
+    "yandex plus kinopoisk": "КиноПоиск",
+
+    # Yandex
+    "yandex disk": "Яндекс Диск", "yandex disk plus": "Яндекс Диск",
+    "yandex plus": "Яндекс Плюс", "яндекс плюс": "Яндекс Плюс",
+
+    # Clouds
+    "vk cloud": "VK Cloud", "cloud mail ru": "Cloud Mail.ru",
+
+    # FITMOST
+    "fitmost com": "FITMOST", "фитмост": "FITMOST",
+
+    # Uchi.ru
+    "uchi": "Учи.ру", "uchi ru": "Учи.ру", "ооо учи ру": "Учи.ру",
+
+    # Lesta (для Игоря)
+    "lesta": "Lesta Games", "lesta ru": "Lesta Games", "lesta games": "Lesta Games",
+
+    # Others
+    "netflix": "Netflix", "spotify": "Spotify",
+    "apple com bill": "Apple Services", "apple services": "Apple Services",
+    "apple music": "Apple Music", "youtube premium": "YouTube Premium",
+    "youtube music": "YouTube Music", "telegram premium": "Telegram Premium",
+    "chatgpt": "ChatGPT", "openai": "OpenAI", "icloud": "iCloud",
+}
+
+
+# ============================================================
+# MODELS
+# ============================================================
+
+class Transaction(BaseModel):
+    date: str
+    amount: float
+    raw_description: str
+
+
+class Subscription(BaseModel):
+    service_name: str
+    monthly_cost: float
+    yearly_cost: float
+    frequency: str
+    confidence: str
+    alerts: List[str]
+    transactions: List[Transaction]
+    subscription_type: str = "subscription"
+
+
+class AnalyzeResponse(BaseModel):
+    subscriptions: List[Subscription]
+    total_monthly_savings_potential: float
+
+
+# ============================================================
+# NORMALIZATION
+# ============================================================
+
+def normalize_description(description: str) -> str:
+    if not description:
+        return ""
+    text = str(description).lower().strip()
+    if "/" in text:
+        parts = text.split("/")
+        if len(parts) > 1:
+            text = " ".join(parts[1:])
+    text = re.sub(r"[^\w\s]", " ", text, flags=re.UNICODE)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def display_service_name(normalized_name: str) -> str:
+    if normalized_name in ALIASES:
+        return ALIASES[normalized_name]
+    return " ".join(word.capitalize() for word in normalized_name.split())
+
+
+# ============================================================
+# DETECTION FUNCTIONS
+# ============================================================
+
+def looks_like_installment(group: pd.DataFrame, service_name: str) -> bool:
+    if service_name in KNOWN_NON_SUBSCRIPTION_SERVICES:
+        return True
+    installment_keywords = {
+        "рассрочка", "долями", "paylater", "installment", "кредит",
+        "кредитный", "skillbox", "geekbrains", "skillfactory", "нетология",
+    }
+    text = " ".join(group["raw_description"].astype(str).str.lower().tolist())
+    return any(keyword in text for keyword in installment_keywords)
+
+
+def is_purchase_like_transaction(group: pd.DataFrame) -> bool:
+    if group.empty:
+        return True
+    category = str(group["category_clean"].iloc[0]).strip()
+    if category in EXCLUDED_CATEGORIES:
+        return True
+    mcc_values = set(
+        pd.to_numeric(group["mcc_clean"], errors="coerce").dropna().astype(int).tolist()
+    )
+    return any(mcc in mcc_values for mcc in NON_SUBSCRIPTION_MCC)
+
+
+def is_likely_subscription_service(service_name: str) -> bool:
+    return service_name in KNOWN_SUBSCRIPTION_SERVICES
+
+
+def requires_manual_review(service_name: str) -> bool:
+    education_keywords = {"учи", "uchi", "education", "образование"}
+    return any(keyword in service_name.lower() for keyword in education_keywords)
+
+
+# ============================================================
+# PARALLEL TRACKS DETECTION
+# ============================================================
+
+def split_recurring_tracks(group: pd.DataFrame) -> List[pd.DataFrame]:
+    group = group.sort_values("date").reset_index(drop=True).copy()
+    if len(group) < 3:
+        return [group]
+
+    transactions = list(group.itertuples())
+    tracks = []
+
+    for row in transactions:
+        best_track = None
+        best_score = float('inf')
+        for track in tracks:
+            last = track[-1]
+            days = (row.date - last.date).days
+            if 25 <= days <= 35:
+                score = abs(days - 30)
+                if score < best_score:
+                    best_score = score
+                    best_track = track
+        if best_track is not None:
+            best_track.append(row)
+        else:
+            tracks.append([row])
+
+    result = []
+    for track in tracks:
+        if len(track) >= 2:
+            positions = [row.Index for row in track]
+            result.append(group.iloc[positions].sort_values("date").reset_index(drop=True))
+    return result if result else [group]
+
+
+# ============================================================
+# SCORING SYSTEM
+# ============================================================
+
+def calculate_subscription_score(group: pd.DataFrame, service_name: str, frequency: str) -> Tuple[int, str]:
+    score = 0
+    if is_likely_subscription_service(service_name):
+        score += 3
+    if requires_manual_review(service_name):
+        score -= 1
+
+    mcc_values = set(
+        pd.to_numeric(group["mcc_clean"], errors="coerce").dropna().astype(int).tolist()
+    )
+    if mcc_values & SUBSCRIPTION_MCC:
+        score += 1
+
+    count = len(group)
+    if count >= 6: score += 3
+    elif count >= 4: score += 2
+    elif count >= 3: score += 1
+
+    if frequency == "monthly": score += 3
+    elif frequency == "quarterly": score += 2
+
+    dates = group["date"].sort_values().tolist()
+    if count >= 3:
+        consecutive = 0
+        low, high = PERIOD_RANGES.get(frequency, (25, 35))
+        for i in range(1, len(dates)):
+            delta = (dates[i] - dates[i - 1]).days
+            if low <= delta <= high:
+                consecutive += 1
+            else:
+                consecutive = 0
+        if consecutive >= 2:
+            score += 2
+
+    if score >= 8: subscription_type = "subscription"
+    elif score >= 5: subscription_type = "subscription"
+    elif score >= 3: subscription_type = "recurring_payment"
+    else: subscription_type = "ordinary_payment"
+
+    return score, subscription_type
+
+
+# ============================================================
+# CSV PARSING & PREPROCESSING (ПОЛНОСТЬЮ ВОССТАНОВЛЕНО)
+# ============================================================
+
+REQUIRED_COLUMNS = {"operationDate", "merchant", "amount", "type"}
+
+def parse_csv(content: bytes) -> pd.DataFrame:
+    text = None
+    for encoding in ("utf-8-sig", "cp1251", "utf-8"):
+        try:
+            text = content.decode(encoding)
+            break
+        except UnicodeDecodeError:
+            continue
+    if text is None:
+        raise HTTPException(status_code=400, detail="Не удалось определить кодировку CSV")
+    try:
+        df = pd.read_csv(io.StringIO(text), sep=",", skipinitialspace=True)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Ошибка чтения CSV: {exc}")
+
+    missing = REQUIRED_COLUMNS - set(df.columns)
+    if missing:
+        raise HTTPException(status_code=400, detail=f"Отсутствуют обязательные колонки: {sorted(missing)}")
+    return df
+
+
+def prepare_transactions(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+
+    # 1. Только списания
+    df = df[df["type"].astype(str).str.strip().eq("Списание")]
+
+    # 2. Только выполненные операции
+    if "status" in df.columns:
+        df = df[df["status"].fillna("").astype(str).str.strip().eq("Выполнен")]
+
+    # 3. Дата
+    df["date"] = pd.to_datetime(df["operationDate"], dayfirst=True, errors="coerce", format="mixed")
+
+    # 4. Сумма
+    df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
+
+    # 5. Merchant и нормализация
+    df["raw_description"] = df["merchant"].fillna("").astype(str).str.strip()
+    df["normalized"] = df["raw_description"].apply(normalize_description)
+
+    # 🚀 КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Группировка по итоговому имени
+    df["service_name"] = df["normalized"].apply(display_service_name)
+
+    # 6. Category
+    if "category" in df.columns:
+        df["category_clean"] = df["category"].fillna("").astype(str).str.strip()
+    else:
+        df["category_clean"] = ""
+
+    # 7. MCC
+    if "mcc" in df.columns:
+        df["mcc_clean"] = pd.to_numeric(df["mcc"], errors="coerce")
+    else:
+        df["mcc_clean"] = None
+
+    # 8. Очистка мусора
+    df = df.dropna(subset=["date", "amount"])
+    df = df[df["normalized"] != ""]
+    df = df[(df["amount"] >= 1) & (df["amount"] <= 100000)]
+
+    today = pd.Timestamp.now().normalize()
+    df = df[df["date"] <= today]
+
+    # 9. Исключения
+    df = df[~df["category_clean"].apply(lambda x: x in EXCLUDED_CATEGORIES)]
+    df = df[~df["raw_description"].apply(lambda x: any(p in str(x).lower() for p in EXCLUDED_DESCRIPTION_PATTERNS))]
+
+    # 10. Дубликаты
+    df = df.drop_duplicates(subset=["date", "amount", "normalized"])
+
+    return df.sort_values("date")
+
+
+# ============================================================
+# AMOUNT & PERIOD ANALYSIS
+# ============================================================
+
+def amounts_are_consistent(amounts: List[float]) -> bool:
+    if len(amounts) < 2: return False
+    amounts = sorted(float(x) for x in amounts)
+    median = float(pd.Series(amounts).median())
+    if median <= 0: return False
+    regular = [x for x in amounts if abs(x - median) / median <= AMOUNT_TOLERANCE]
+    regular_ratio = len(regular) / len(amounts)
+    if len(amounts) == 2: return regular_ratio == 1.0
+    return regular_ratio >= 0.75
+
+
+def get_typical_amount(amounts: List[float]) -> float:
+    return round(float(pd.Series(amounts).median()), 2)
+
+
+def detect_frequency(dates: List[pd.Timestamp]) -> str:
+    if len(dates) < 2: return None
+    dates = sorted(dates)
+    intervals = [(dates[i] - dates[i - 1]).days for i in range(1, len(dates))]
+    if not intervals: return None
+
+    candidates = []
+    for frequency, (low, high) in PERIOD_RANGES.items():
+        matching = [interval for interval in intervals if low <= interval <= high]
+        match_count = len(matching)
+        if len(intervals) >= 2 and match_count < 2: continue
+        elif match_count < 1: continue
+        score = match_count / len(intervals)
+        candidates.append((score, match_count, frequency))
+
+    if not candidates: return None
+    candidates.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return candidates[0][2]
+
+
+def detect_alerts(transactions: pd.DataFrame) -> List[str]:
+    alerts = []
+    transactions = transactions.sort_values("date")
+    amounts = transactions["amount"].tolist()
+    if amounts and amounts[0] == 1:
+        alerts.append("Возможно, закончился пробный период")
+    if len(amounts) >= 2:
+        previous, latest = amounts[-2], amounts[-1]
+        if latest > previous * 1.10:
+            alerts.append("Обнаружено повышение цены в последнем платеже")
+        elif latest < previous * 0.90:
+            alerts.append("Обнаружено снижение цены в последнем платеже")
+    return alerts
+
+
+# ============================================================
+# MAIN ANALYSIS
+# ============================================================
+
+def analyze_transactions(df: pd.DataFrame) -> List[Subscription]:
+    subscriptions = []
+
+    # 🚀 Группируем по service_name (после применения алиасов)
+    for service_name, group in df.groupby("service_name"):
+        if len(group) < 2:
+            continue
+
+        if looks_like_installment(group, service_name):
+            continue
+        if is_purchase_like_transaction(group):
+            continue
+
+        # Разбиваем на треки только для больших групп (>6), иначе берем как есть
+        if len(group) > 6:
+            tracks = split_recurring_tracks(group)
+            valid_tracks = [t for t in tracks if len(t) >= 2]
+            tracks = valid_tracks if valid_tracks else [group]
+        else:
+            tracks = [group]
+
+        for track in tracks:
+            if len(track) < 2:
+                continue
+
+            amounts = track["amount"].astype(float).tolist()
+            if not amounts_are_consistent(amounts):
+                continue
+
+            dates = track["date"].sort_values().tolist()
+            frequency = detect_frequency(dates)
+            if not frequency:
+                continue
+
+            score, subscription_type = calculate_subscription_score(track, service_name, frequency)
+            if score < 3:
+                continue
+
+            typical_amount = get_typical_amount(amounts)
+            if frequency == "weekly": monthly_cost = typical_amount * 4.33
+            elif frequency == "biweekly": monthly_cost = typical_amount * 2.17
+            elif frequency == "monthly": monthly_cost = typical_amount
+            elif frequency == "quarterly": monthly_cost = typical_amount / 3
+            else: continue
+
+            monthly_cost = round(monthly_cost, 2)
+            yearly_cost = round(monthly_cost * 12, 2)
+
+            confidence = "high" if score >= 8 else ("medium" if score >= 5 else "low")
+
+            alerts = detect_alerts(track)
+            if requires_manual_review(service_name):
+                alerts.append("Требуется проверка: возможно, это не подписка, а регулярная оплата услуги")
+
+            transactions_list = []
+            for _, row in track.sort_values("date").iterrows():
+                transactions_list.append(Transaction(
+                    date=row["date"].strftime("%Y-%m-%d"),
+                    amount=round(float(row["amount"]), 2),
+                    raw_description=str(row["raw_description"]),
+                ))
+
+            subscriptions.append(Subscription(
+                service_name=service_name,
+                monthly_cost=monthly_cost,
+                yearly_cost=yearly_cost,
+                frequency=frequency,
+                confidence=confidence,
+                alerts=alerts,
+                transactions=transactions_list,
+                subscription_type=subscription_type,
+            ))
+
+    subscriptions.sort(key=lambda x: x.monthly_cost, reverse=True)
+    return subscriptions
+
+
+# ============================================================
+# API
+# ============================================================
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "version": "1.3.2"}
+
+
+@app.post("/api/v1/analyze", response_model=AnalyzeResponse)
+async def analyze(file: UploadFile = File(...)):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Файл не указан")
+    if not file.filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Поддерживаются только CSV-файлы")
+
+    content = await file.read()
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=413, detail="Файл слишком большой (макс 10 МБ)")
+
+    df = parse_csv(content)
+    df = prepare_transactions(df)
+    subscriptions = analyze_transactions(df)
+
+    total_monthly = round(sum(sub.monthly_cost for sub in subscriptions), 2)
+
+    return AnalyzeResponse(
+        subscriptions=subscriptions,
+        total_monthly_savings_potential=total_monthly,
+    )
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
