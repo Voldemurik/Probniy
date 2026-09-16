@@ -194,7 +194,7 @@ vercel.json, requirements.txt, .vercelignore   деплой на Vercel
 
 ## Команда ИИще
 
-Тимлид и интеграция (Voldemurik) · AI-интегратор — GigaChat, промпты, адаптер LLM (greaterdustyyy) · Backend — FastAPI,
+Тимлид и интеграция (Voldemurik) · AI-интегратор — GigaChat, промпты, адаптер LLM, отладочные файлы по категориям (greaterdustyyy/ivanko420) · Backend — FastAPI,
 парсеры, слияние с фронтом (olegas) · Frontend — чат-интерфейс (Danil2) · UI/UX-дизайнер — макеты Figma Make, сайт,
 презентация (gohefi) · Аналитик / продакт-менеджер — ТЗ, спорные случаи классификации (TREgor).
 Часть интеграции, кластеризация названий, карточки подписок и деплой на Vercel сделаны с помощью ИИ-ассистента Claude.
