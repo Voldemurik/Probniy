@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "profile_id": "freelancer_marina",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 90,
+    "subscription_clusters": 3,
+    "one_off_digital_count": 0
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "Яндекс Диск",
+      "category": "Облако",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        72,
+        73,
+        79,
+        82,
+        83,
+        86
+      ]
+    },
+    {
+      "canonical_name": "Skillbox",
+      "category": "Образование",
+      "period": "monthly",
+      "fixed_amount": 5000,
+      "tx_indices": [
+        50,
+        51,
+        52,
+        55,
+        65,
+        69
+      ]
+    },
+    {
+      "canonical_name": "Звук",
+      "category": "Музыка",
+      "period": "monthly",
+      "fixed_amount": 299,
+      "tx_indices": [
+        28,
+        29,
+        32,
+        33,
+        37,
+        38
+      ]
+    }
+  ]
+}

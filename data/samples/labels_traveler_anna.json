@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "profile_id": "traveler_anna",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 94,
+    "subscription_clusters": 3,
+    "one_off_digital_count": 0
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "Яндекс Диск",
+      "category": "Облако",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        64,
+        65,
+        67,
+        71,
+        75,
+        78
+      ]
+    },
+    {
+      "canonical_name": "Duolingo",
+      "category": "Образование",
+      "period": "monthly",
+      "fixed_amount": 990,
+      "tx_indices": [
+        50,
+        51,
+        56,
+        59,
+        60,
+        61
+      ]
+    },
+    {
+      "canonical_name": "Priority Pass",
+      "category": "Путешествия",
+      "period": "monthly",
+      "fixed_amount": 990,
+      "tx_indices": [
+        79,
+        84,
+        86,
+        88,
+        91,
+        92
+      ]
+    }
+  ]
+}

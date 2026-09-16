@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "profile_id": "pensioner_ivan",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 87,
+    "subscription_clusters": 2,
+    "one_off_digital_count": 0
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "Одноклассники",
+      "category": "Соцсети",
+      "period": "monthly",
+      "fixed_amount": 199,
+      "tx_indices": [
+        60,
+        61,
+        64,
+        66,
+        68,
+        70
+      ]
+    },
+    {
+      "canonical_name": "Ростелеком",
+      "category": "ЖКХ",
+      "period": "monthly",
+      "fixed_amount": 550,
+      "tx_indices": [
+        27,
+        29,
+        31,
+        32,
+        34,
+        35
+      ]
+    }
+  ]
+}

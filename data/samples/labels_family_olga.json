@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "profile_id": "family_olga",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 103,
+    "subscription_clusters": 4,
+    "one_off_digital_count": 0
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "Кинопоиск",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        50,
+        54,
+        55,
+        56,
+        57,
+        63
+      ]
+    },
+    {
+      "canonical_name": "Okko",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 499,
+      "tx_indices": [
+        73,
+        79,
+        80
+      ]
+    },
+    {
+      "canonical_name": "Учи.ру",
+      "category": "Образование",
+      "period": "monthly",
+      "fixed_amount": 1490,
+      "tx_indices": [
+        92,
+        95,
+        97,
+        98,
+        100,
+        102
+      ]
+    },
+    {
+      "canonical_name": "СберПрайм",
+      "category": "Экосистема",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        23,
+        28,
+        30,
+        34,
+        39,
+        41
+      ]
+    }
+  ]
+}

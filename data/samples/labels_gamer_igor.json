@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "profile_id": "gamer_igor",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 83,
+    "subscription_clusters": 2,
+    "one_off_digital_count": 6
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "VK Play",
+      "category": "Игры",
+      "period": "monthly",
+      "fixed_amount": 999,
+      "tx_indices": [
+        59,
+        60,
+        62,
+        63,
+        73,
+        74
+      ]
+    },
+    {
+      "canonical_name": "Lesta Games",
+      "category": "Игры",
+      "period": "monthly",
+      "fixed_amount": 1000,
+      "tx_indices": [
+        36,
+        41,
+        46,
+        51,
+        53,
+        55
+      ]
+    }
+  ]
+}

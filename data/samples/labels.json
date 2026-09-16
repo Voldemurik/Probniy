@@ -1,0 +1,355 @@
+{
+  "profiles": {
+    "student_alexey": {
+      "subscriptions": [
+        {
+          "canonical_name": "Яндекс Плюс",
+          "category": "Видео",
+          "period": "monthly",
+          "fixed_amount": 299,
+          "tx_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "canonical_name": "Литрес",
+          "category": "Книги",
+          "period": "monthly",
+          "fixed_amount": 299,
+          "tx_indices": [
+            6,
+            7
+          ]
+        },
+        {
+          "canonical_name": "Облако Mail.ru",
+          "category": "Облако",
+          "period": "monthly",
+          "fixed_amount": 199,
+          "tx_indices": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ]
+        }
+      ],
+      "total_tx": 91,
+      "one_off_digital_count": 0
+    },
+    "freelancer_marina": {
+      "subscriptions": [
+        {
+          "canonical_name": "Яндекс Диск",
+          "category": "Облако",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            91,
+            92,
+            93,
+            94,
+            95,
+            96
+          ]
+        },
+        {
+          "canonical_name": "Skillbox",
+          "category": "Образование",
+          "period": "monthly",
+          "fixed_amount": 5000,
+          "tx_indices": [
+            97,
+            98,
+            99,
+            100,
+            101,
+            102
+          ]
+        },
+        {
+          "canonical_name": "Звук",
+          "category": "Музыка",
+          "period": "monthly",
+          "fixed_amount": 299,
+          "tx_indices": [
+            103,
+            104,
+            105,
+            106,
+            107,
+            108
+          ]
+        }
+      ],
+      "total_tx": 90,
+      "one_off_digital_count": 0
+    },
+    "family_olga": {
+      "subscriptions": [
+        {
+          "canonical_name": "Кинопоиск",
+          "category": "Видео",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            181,
+            182,
+            183,
+            184,
+            185,
+            186
+          ]
+        },
+        {
+          "canonical_name": "Okko",
+          "category": "Видео",
+          "period": "monthly",
+          "fixed_amount": 499,
+          "tx_indices": [
+            187,
+            188,
+            189
+          ]
+        },
+        {
+          "canonical_name": "Учи.ру",
+          "category": "Образование",
+          "period": "monthly",
+          "fixed_amount": 1490,
+          "tx_indices": [
+            190,
+            191,
+            192,
+            193,
+            194,
+            195
+          ]
+        },
+        {
+          "canonical_name": "СберПрайм",
+          "category": "Экосистема",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            196,
+            197,
+            198,
+            199,
+            200,
+            201
+          ]
+        }
+      ],
+      "total_tx": 103,
+      "one_off_digital_count": 0
+    },
+    "gamer_igor": {
+      "subscriptions": [
+        {
+          "canonical_name": "VK Play",
+          "category": "Игры",
+          "period": "monthly",
+          "fixed_amount": 999,
+          "tx_indices": [
+            284,
+            285,
+            286,
+            287,
+            288,
+            289
+          ]
+        },
+        {
+          "canonical_name": "Lesta Games",
+          "category": "Игры",
+          "period": "monthly",
+          "fixed_amount": 1000,
+          "tx_indices": [
+            290,
+            291,
+            292,
+            293,
+            294,
+            295
+          ]
+        }
+      ],
+      "total_tx": 83,
+      "one_off_digital_count": 6
+    },
+    "maximalist_viktor": {
+      "subscriptions": [
+        {
+          "canonical_name": "Кинопоиск",
+          "category": "Видео",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            367,
+            368,
+            369,
+            370,
+            371,
+            372
+          ]
+        },
+        {
+          "canonical_name": "Okko",
+          "category": "Видео",
+          "period": "monthly",
+          "fixed_amount": 499,
+          "tx_indices": [
+            373,
+            374,
+            375,
+            376,
+            377,
+            378
+          ]
+        },
+        {
+          "canonical_name": "Premier",
+          "category": "Видео",
+          "period": "monthly",
+          "fixed_amount": 599,
+          "tx_indices": [
+            379,
+            380,
+            381,
+            382,
+            383,
+            384
+          ]
+        },
+        {
+          "canonical_name": "Start",
+          "category": "Видео",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            385,
+            386,
+            387,
+            388,
+            389,
+            390
+          ]
+        },
+        {
+          "canonical_name": "Иви",
+          "category": "Видео",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            391,
+            392,
+            393,
+            394,
+            395,
+            396
+          ]
+        },
+        {
+          "canonical_name": "Звук",
+          "category": "Музыка",
+          "period": "monthly",
+          "fixed_amount": 299,
+          "tx_indices": [
+            397,
+            398,
+            399,
+            400,
+            401,
+            402
+          ]
+        },
+        {
+          "canonical_name": "VK Музыка",
+          "category": "Музыка",
+          "period": "monthly",
+          "fixed_amount": 299,
+          "tx_indices": [
+            403,
+            404,
+            405,
+            406,
+            407,
+            408
+          ]
+        },
+        {
+          "canonical_name": "Яндекс Диск",
+          "category": "Облако",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            409,
+            410,
+            411,
+            412,
+            413,
+            414
+          ]
+        },
+        {
+          "canonical_name": "Облако Mail.ru",
+          "category": "Облако",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            415,
+            416,
+            417,
+            418,
+            419,
+            420
+          ]
+        },
+        {
+          "canonical_name": "Fitmost",
+          "category": "Фитнес",
+          "period": "monthly",
+          "fixed_amount": 3990,
+          "tx_indices": [
+            421,
+            422,
+            423,
+            424,
+            425,
+            426
+          ]
+        },
+        {
+          "canonical_name": "СберПрайм",
+          "category": "Экосистема",
+          "period": "monthly",
+          "fixed_amount": 399,
+          "tx_indices": [
+            427,
+            428,
+            429,
+            430,
+            431,
+            432
+          ]
+        }
+      ],
+      "total_tx": 148,
+      "one_off_digital_count": 0
+    }
+  },
+  "meta": {
+    "period": "03.03.2026 — 02.09.2026",
+    "profiles_count": 5,
+    "total_transactions": 515,
+    "total_subscription_clusters": 23
+  }
+}

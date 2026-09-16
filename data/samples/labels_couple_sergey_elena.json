@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "profile_id": "couple_sergey_elena",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 131,
+    "subscription_clusters": 3,
+    "one_off_digital_count": 0
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "Яндекс Плюс",
+      "category": "Экосистема",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        67,
+        71,
+        75,
+        87,
+        89,
+        97
+      ]
+    },
+    {
+      "canonical_name": "Иви",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        79,
+        86,
+        90,
+        94,
+        98,
+        100
+      ]
+    },
+    {
+      "canonical_name": "СберПрайм",
+      "category": "Экосистема",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        54,
+        55,
+        61,
+        63,
+        64,
+        73
+      ]
+    }
+  ]
+}

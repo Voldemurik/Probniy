@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "profile_id": "student_alexey",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 91,
+    "subscription_clusters": 3,
+    "one_off_digital_count": 0
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "Яндекс Плюс",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 299,
+      "tx_indices": [
+        49,
+        52,
+        55,
+        59,
+        63,
+        66
+      ]
+    },
+    {
+      "canonical_name": "Литрес",
+      "category": "Книги",
+      "period": "monthly",
+      "fixed_amount": 299,
+      "tx_indices": [
+        19,
+        21
+      ]
+    },
+    {
+      "canonical_name": "Облако Mail.ru",
+      "category": "Облако",
+      "period": "monthly",
+      "fixed_amount": 199,
+      "tx_indices": [
+        72,
+        73,
+        75,
+        81,
+        82,
+        83
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "profile_id": "young_professional_dmitry",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 115,
+    "subscription_clusters": 3,
+    "one_off_digital_count": 0
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "Яндекс Плюс",
+      "category": "Экосистема",
+      "period": "monthly",
+      "fixed_amount": 299,
+      "tx_indices": [
+        48,
+        60,
+        64,
+        66,
+        67,
+        69
+      ]
+    },
+    {
+      "canonical_name": "Telegram Premium",
+      "category": "Связь",
+      "period": "monthly",
+      "fixed_amount": 299,
+      "tx_indices": [
+        26,
+        33,
+        35,
+        39,
+        42,
+        44
+      ]
+    },
+    {
+      "canonical_name": "Skillbox",
+      "category": "Образование",
+      "period": "monthly",
+      "fixed_amount": 3500,
+      "tx_indices": [
+        89,
+        91,
+        93,
+        98,
+        104,
+        105
+      ]
+    }
+  ]
+}

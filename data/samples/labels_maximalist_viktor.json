@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "profile_id": "maximalist_viktor",
+    "period": "03.03.2026 — 02.09.2026",
+    "total_transactions": 148,
+    "subscription_clusters": 11,
+    "one_off_digital_count": 0
+  },
+  "subscriptions": [
+    {
+      "canonical_name": "Кинопоиск",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        113,
+        122,
+        124,
+        126,
+        130,
+        134
+      ]
+    },
+    {
+      "canonical_name": "Okko",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 499,
+      "tx_indices": [
+        97,
+        98,
+        110,
+        115,
+        117,
+        119
+      ]
+    },
+    {
+      "canonical_name": "Premier",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 599,
+      "tx_indices": [
+        82,
+        83,
+        85,
+        88,
+        94,
+        95
+      ]
+    },
+    {
+      "canonical_name": "Start",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        60,
+        64,
+        75,
+        76,
+        79,
+        81
+      ]
+    },
+    {
+      "canonical_name": "Иви",
+      "category": "Видео",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        38,
+        40,
+        43,
+        46,
+        53,
+        54
+      ]
+    },
+    {
+      "canonical_name": "Звук",
+      "category": "Музыка",
+      "period": "monthly",
+      "fixed_amount": 299,
+      "tx_indices": [
+        123,
+        129,
+        131,
+        135,
+        136,
+        142
+      ]
+    },
+    {
+      "canonical_name": "VK Музыка",
+      "category": "Музыка",
+      "period": "monthly",
+      "fixed_amount": 299,
+      "tx_indices": [
+        11,
+        13,
+        15,
+        20,
+        28,
+        31
+      ]
+    },
+    {
+      "canonical_name": "Яндекс Диск",
+      "category": "Облако",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        87,
+        89,
+        99,
+        101,
+        107,
+        111
+      ]
+    },
+    {
+      "canonical_name": "Облако Mail.ru",
+      "category": "Облако",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        44,
+        50,
+        59,
+        61,
+        65,
+        71
+      ]
+    },
+    {
+      "canonical_name": "Fitmost",
+      "category": "Фитнес",
+      "period": "monthly",
+      "fixed_amount": 3990,
+      "tx_indices": [
+        133,
+        137,
+        138,
+        144,
+        146,
+        147
+      ]
+    },
+    {
+      "canonical_name": "СберПрайм",
+      "category": "Экосистема",
+      "period": "monthly",
+      "fixed_amount": 399,
+      "tx_indices": [
+        23,
+        24,
+        25,
+        35,
+        36,
+        41
+      ]
+    }
+  ]
+}
