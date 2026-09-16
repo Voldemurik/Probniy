@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Чат-бот</title>
+    <style>
+        /* ----- Сброс и полный экран ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background: #e5ddd5;
+        }
+
+        /* ----- Контейнер чата — на весь экран ----- */
+        .chat-container {
+            width: 100%;
+            height: 100%;          /* 100% высоты окна */
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 0;       /* убираем скругление */
+            box-shadow: none;       /* убираем тень */
+        }
+
+        /* ----- Шапка ----- */
+        .chat-header {
+            background: #0088cc;
+            color: white;
+            padding: 18px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .chat-header .avatar {
+            width: 40px;
+            height: 40px;
+            background: #ffffff33;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .clear-btn {
+            background: transparent;
+            border: none;
+            color: #ffffff88;
+            font-size: 14px;
+            margin-left: auto;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .clear-btn:hover {
+            color: #ffffff;
+        }
+
+        /* ----- Область сообщений (занимает всё оставшееся место) ----- */
+        .messages {
+            flex: 1;
+            padding: 16px 18px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #f0f2f5;
+        }
+
+        /* ----- Стили сообщений (без изменений) ----- */
+        .message {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: #dcf8c6;
+            border-bottom-right-radius: 6px;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: #ffffff;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .message .time {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ----- Панель ввода ----- */
+        .input-area {
+            display: flex;
+            padding: 12px 16px 16px;
+            gap: 10px;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            flex-shrink: 0;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 24px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-area input:focus {
+            border-color: #0088cc;
+            box-shadow: 0 0 0 3px rgba(0,136,204,0.15);
+        }
+
+        .input-area button {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 0 22px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .input-area button:hover {
+            background: #006699;
+        }
+
+        .input-area button:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <!-- Шапка -->
+    <div class="chat-header">
+        <div class="avatar">💬</div>
+        <span>Чат-бот</span>
+        <button class="clear-btn" id="clearHistory">✕ очистить</button>
+    </div>
+
+    <!-- Область сообщений -->
+    <div class="messages" id="messageContainer"></div>
+
+    <!-- Поле ввода -->
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="Введите сообщение..." autofocus />
+        <button id="sendButton">Отправить</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const messagesContainer = document.getElementById('messageContainer');
+        const input = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendButton');
+        const clearBtn = document.getElementById('clearHistory');
+
+        const STORAGE_KEY = 'chat_messages';
+
+        const botReplies = [
+            'Привет! Как дела?',
+            'Отлично, а у тебя?',
+            'Расскажи подробнее.',
+            'Я тебя понимаю.',
+            'Здорово! 😊',
+            'Может, попьём чаю? ☕',
+            'Спасибо за сообщение!',
+            'Это интересно...',
+            'Хорошего дня!',
+            'Понял, принято.'
+        ];
+
+        function loadMessages() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const messages = JSON.parse(stored);
+                    messages.forEach(msg => renderMessage(msg.text, msg.type, msg.timestamp, false));
+                } catch (e) {
+                    console.warn('Не удалось разобрать сохранённые сообщения');
+                }
+            }
+        }
+
+        function saveMessages() {
+            const items = messagesContainer.querySelectorAll('.message');
+            const messages = [];
+            items.forEach(el => {
+                const text = el.querySelector('.text')?.textContent || '';
+                const type = el.classList.contains('user') ? 'user' : 'bot';
+                const time = el.querySelector('.time')?.textContent || '';
+                messages.push({ text, type, timestamp: time });
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+        }
+
+        function renderMessage(text, type, timestamp, save = true) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}`;
+
+            const textSpan = document.createElement('div');
+            textSpan.className = 'text';
+            textSpan.textContent = text;
+            msgDiv.appendChild(textSpan);
+
+            const timeSpan = document.createElement('div');
+            timeSpan.className = 'time';
+            const now = timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            timeSpan.textContent = now;
+            msgDiv.appendChild(timeSpan);
+
+            messagesContainer.appendChild(msgDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            if (save) {
+                saveMessages();
+            }
+        }
+
+        function addUserMessage(text) {
+            if (!text.trim()) return;
+            const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            renderMessage(text.trim(), 'user', now, true);
+            input.value = '';
+
+            setTimeout(() => {
+                const reply = botReplies[Math.floor(Math.random() * botReplies.length)];
+                const replyTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                renderMessage(reply, 'bot', replyTime, true);
+            }, 400 + Math.random() * 600);
+        }
+
+        function clearHistory() {
+            if (confirm('Удалить всю историю сообщений?')) {
+                messagesContainer.innerHTML = '';
+                localStorage.removeItem(STORAGE_KEY);
+                const welcome = 'Чат очищен. Начните общение!';
+                const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                renderMessage(welcome, 'bot', now, true);
+            }
+        }
+
+        function handleSend() {
+            addUserMessage(input.value);
+        }
+
+        sendBtn.addEventListener('click', handleSend);
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+
+        clearBtn.addEventListener('click', clearHistory);
+
+        if (localStorage.getItem(STORAGE_KEY)) {
+            loadMessages();
+        } else {
+            const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            renderMessage('Привет! Я бот. Напиши что-нибудь.', 'bot', now, true);
+        }
+
+        input.focus();
+
+        window.addEventListener('beforeunload', saveMessages);
+    })();
+</script>
+</body>
+</html> 

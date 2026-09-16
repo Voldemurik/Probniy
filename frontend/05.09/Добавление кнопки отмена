@@ -1,0 +1,112 @@
+        /* ===================================================== 
+            КНОПКА "ОТМЕНИТЬ" 
+            
+            Изначально скрыта. 
+            Появляется одновременно с кнопкой "Отправить". 
+            ===================================================== */ 
+        .cancel-btn { 
+            display: none; 
+
+            background: #1b1b1d; 
+
+            color: #eeeeee; 
+
+            border: 
+                1px solid #29292c; 
+
+            padding: 
+                14px 26px; 
+
+            border-radius: 16px; 
+            
+            font-size: 15px; 
+
+            font-weight: 500; 
+            
+            cursor: pointer; 
+            
+            transition: 
+                background 0.2s; 
+                
+            white-space: nowrap; 
+        } 
+        
+        .cancel-btn:hover { 
+            
+            background: #252528; 
+        } 
+        
+        .cancel-btn:active { 
+            
+            transform: 
+                scale(0.96); 
+        }
+
+
+
+            /* ===================================================== 
+                КНОПКА "ОТМЕНИТЬ" 
+                Удаляет выбранный файл до его отправки. 
+                ===================================================== */
+
+            cancelButton.addEventListener(
+                'click',
+                () => { 
+                    
+                    /* 
+                    * Очищаем выбранный файл 
+                    * из элемента input. 
+                    */
+                   
+                    fileInput.value = 
+                        ''; 
+
+
+                    /* 
+                    * Убираем отображение имени файла. 
+                    */ 
+                    
+                    fileName.textContent = 
+                        ''; 
+                        
+                    /* 
+                    * Скрываем кнопки "Отправить" 
+                    * и "Отменить". 
+                    */ 
+                   
+                    sendButton.style.display = 
+                        'none'; 
+                    
+                    cancelButton.style.display = 
+                        'none'; 
+                        
+                    /* 
+                    * Если файл был отменён после предыдущей 
+                    * отправки, быстрые предложения скрываются. 
+                    */ 
+                    
+                    suggestions.style.display = 
+                        'none'; 
+                    
+                }
+            );
+
+
+
+const cancelButton =
+    document.getElementById(
+        'cancelButton'
+    );
+
+
+
+<!-- Кнопка отмены выбранного файла. -->
+
+<button
+    class="cancel-btn"
+    id="cancelButton"
+>
+
+    Отменить
+
+</button>

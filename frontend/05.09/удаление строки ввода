@@ -1,0 +1,67 @@
+<div class="input-area">
+    <input
+        type="text"
+        id="messageInput"
+        placeholder="Введите сообщение..."
+        autofocus
+    />
+
+    <button id="sendButton">
+        Отправить
+    </button>
+</div>
+
+
+const input =
+    document.getElementById('messageInput');
+
+const sendBtn =
+    document.getElementById('sendButton');
+
+
+
+function handleSend() {
+    addUserMessage(
+        input.value
+    );
+}
+
+
+input.value = '';
+
+
+sendBtn.addEventListener(
+    'click',
+    handleSend
+);
+
+
+input.addEventListener(
+    'keydown',
+    (e) => {
+        if (
+            e.key === 'Enter' &&
+            !e.shiftKey
+        ) {
+            e.preventDefault();
+            handleSend();
+        }
+    }
+);
+
+input.focus(); 
+
+Быстрые предложения теперь не проходят через строку ввода, отсюдаизменения:
+
+старый код:
+
+input.value =
+    button.textContent.trim();
+
+handleSend();
+
+новый код:
+
+addUserMessage(
+    button.textContent.trim()
+);

@@ -1,0 +1,22 @@
+/* ----- Адаптация для небольших экранов ----- */
+
+        @media (max-width: 600px) {
+
+            .suggestions {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .suggestion-btn {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+
+            .input-area {
+                padding: 10px 12px 12px;
+            }
+
+            .input-area button {
+                padding: 0 16px;
+            }
+        }

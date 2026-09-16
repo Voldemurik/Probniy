@@ -1,0 +1,43 @@
+/* ----- Экран загрузки ----- */
+
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    background: #000000;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 42px;
+    text-align: center;
+
+    transition: transform 0.8s ease;
+}
+
+.loading-screen.hide {
+    transform: translateY(-100%);
+}
+
+/* ----- Надпись экрана загрузки ----- */
+
+<div class="loading-screen" id="loadingScreen">
+    Найдите все ваши подписки
+</div>
+
+
+/* ----- Анимация экрана загрузки ----- */
+
+
+const loadingScreen =
+    document.getElementById('loadingScreen');
+
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        loadingScreen.classList.add('hide');
+    }, 3000);
+});

@@ -1,0 +1,190 @@
+        <!-- =====================================================
+             ПАНЕЛЬ ЗАГРУЗКИ ФАЙЛА
+             ===================================================== -->
+
+        <div class="input-area">
+
+
+            <!-- Скрытый стандартный элемент выбора файла. -->
+
+            <input
+                type="file"
+                id="fileInput"
+                hidden
+            />
+
+
+            <!-- Кнопка, которая открывает выбор файла. -->
+
+            <button
+                class="upload-btn"
+                id="uploadButton"
+            >
+
+                Загрузить файл
+
+            </button>
+
+
+            <!-- Кнопка отправки выбранного файла. -->
+
+            <button
+                class="send-btn"
+                id="sendButton"
+            >
+
+                Отправить
+
+            </button>
+
+
+            <!-- Здесь отображается имя выбранного файла. -->
+
+            <span
+                class="file-name"
+                id="fileName"
+            ></span>
+
+
+        </div>
+
+
+
+            /* =====================================================
+               ЭЛЕМЕНТЫ ЗАГРУЗКИ ФАЙЛА
+               ===================================================== */
+
+            const fileInput =
+                document.getElementById(
+                    'fileInput'
+                );
+
+            const uploadButton =
+                document.getElementById(
+                    'uploadButton'
+                );
+
+            const sendButton =
+                document.getElementById(
+                    'sendButton'
+                );
+
+            const fileName =
+                document.getElementById(
+                    'fileName'
+                );
+
+
+            /* =====================================================
+               ПОСЛЕ ВЫБОРА ФАЙЛА
+               ===================================================== */
+
+            fileInput.addEventListener(
+                'change',
+                () => {
+
+                    if (
+                        fileInput.files.length > 0
+                    ) {
+
+                        const file =
+                            fileInput.files[0];
+
+
+                        /* Показываем название выбранного файла. */
+
+                        fileName.textContent =
+                            file.name;
+
+
+                        /* Показываем кнопку "Отправить". */
+
+                        sendButton.style.display =
+                            'block';
+
+
+                        /*
+                         * Если пользователь выбрал новый файл,
+                         * его снова можно отправить.
+                         */
+
+                        sendButton.disabled =
+                            false;
+
+                    }
+
+                }
+            );
+
+
+            /* =====================================================
+               КНОПКА "ОТПРАВИТЬ"
+               ===================================================== */
+
+            sendButton.addEventListener(
+                'click',
+                () => {
+
+                    /*
+                     * Ничего не делаем, если файл не выбран
+                     * или этот файл уже был отправлен.
+                     */
+
+                    if (
+                        fileInput.files.length === 0 ||
+                        sendButton.disabled
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const file =
+                        fileInput.files[0];
+
+
+                    /* Сообщение пользователя о загруженном файле. */
+
+                    addUserMessage(
+                        `Файл "${file.name}" загружен.`
+                    );
+
+
+                    /*
+                     * Единственный автоматический ответ
+                     * ассистента после отправки файла.
+                     */
+
+                    renderMessage(
+                        'Выберете опцию из списка ниже',
+                        'bot',
+                        null,
+                        true
+                    );
+
+
+                    /*
+                     * Показываем быстрые предложения
+                     * только после отправки файла.
+                     */
+
+                    suggestions.style.display =
+                        'flex';
+
+
+                    /*
+                     * Блокируем повторную отправку
+                     * этого же файла.
+                     *
+                     * При выборе нового файла кнопка
+                     * снова станет активной.
+                     */
+
+                    sendButton.disabled =
+                        true;
+
+                }
+            );
+
+

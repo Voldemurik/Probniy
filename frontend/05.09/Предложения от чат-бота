@@ -1,0 +1,27 @@
+        <!-- =====================================================
+             БЫСТРЫЕ ПРЕДЛОЖЕНИЯ
+             ===================================================== -->
+
+        <div class="suggestions" id="suggestions">
+
+            <button class="suggestion-btn">
+                Активные подписки
+            </button>
+
+            <button class="suggestion-btn">
+                Расходы за 3 месяца
+            </button>
+
+            <button class="suggestion-btn">
+                Расходы за 6 месяцев
+            </button>
+
+            <button class="suggestion-btn">
+                Расходы за 12 месяцев
+            </button>
+
+            <button class="suggestion-btn">
+                Инвестиции
+            </button>
+
+        </div>

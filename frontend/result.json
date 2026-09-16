@@ -1,0 +1,537 @@
+{
+  "contract_version": "0.1",
+  "meta": {
+    "period_from": "2026-03-02",
+    "period_to": "2026-08-31",
+    "months": 6.0,
+    "tx_count": 186,
+    "debit_count": 72,
+    "source_format": "csv-ru",
+    "warnings": []
+  },
+  "totals": {
+    "count": 12,
+    "monthly": 8279.0,
+    "yearly": 99348.0
+  },
+  "subscriptions": [
+    {
+      "id": "s_001",
+      "name": "Fitmost",
+      "merchant_raw_variants": [
+        "FITMOST.COM MOSCOW"
+      ],
+      "category": "fitness",
+      "period": "monthly",
+      "amount_current": 3990.0,
+      "amount_history": [
+        {
+          "date": "2026-03-23",
+          "amount": 3990.0
+        }
+      ],
+      "charges": [
+        "t_000020",
+        "t_000052",
+        "t_000083",
+        "t_000114",
+        "t_000145",
+        "t_000177"
+      ],
+      "first_charge": "2026-03-23",
+      "last_charge": "2026-08-21",
+      "next_charge_expected": "2026-09-20",
+      "status": "active",
+      "confidence": 0.99,
+      "flags": [],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 3990.0,
+      "yearly_cost": 47880.0
+    },
+    {
+      "id": "s_002",
+      "name": "Premier",
+      "merchant_raw_variants": [
+        "PREMIER.ONE MOSCOW"
+      ],
+      "category": "video",
+      "period": "monthly",
+      "amount_current": 599.0,
+      "amount_history": [
+        {
+          "date": "2026-03-06",
+          "amount": 599.0
+        }
+      ],
+      "charges": [
+        "t_000004",
+        "t_000033",
+        "t_000065",
+        "t_000097",
+        "t_000133",
+        "t_000159"
+      ],
+      "first_charge": "2026-03-06",
+      "last_charge": "2026-08-06",
+      "next_charge_expected": "2026-09-05",
+      "status": "active",
+      "confidence": 0.98,
+      "flags": [
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 599.0,
+      "yearly_cost": 7188.0
+    },
+    {
+      "id": "s_003",
+      "name": "Okko",
+      "merchant_raw_variants": [
+        "OKKO.TV MOSCOW RUS"
+      ],
+      "category": "video",
+      "period": "monthly",
+      "amount_current": 499.0,
+      "amount_history": [
+        {
+          "date": "2026-03-04",
+          "amount": 499.0
+        }
+      ],
+      "charges": [
+        "t_000001",
+        "t_000032",
+        "t_000061",
+        "t_000094",
+        "t_000132",
+        "t_000155"
+      ],
+      "first_charge": "2026-03-04",
+      "last_charge": "2026-08-04",
+      "next_charge_expected": "2026-09-03",
+      "status": "active",
+      "confidence": 0.98,
+      "flags": [
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 499.0,
+      "yearly_cost": 5988.0
+    },
+    {
+      "id": "s_004",
+      "name": "Start",
+      "merchant_raw_variants": [
+        "START.RU MOSCOW RUS",
+        "ООО СТАРТ"
+      ],
+      "category": "video",
+      "period": "monthly",
+      "amount_current": 399.0,
+      "amount_history": [
+        {
+          "date": "2026-03-09",
+          "amount": 399.0
+        }
+      ],
+      "charges": [
+        "t_000006",
+        "t_000034",
+        "t_000067",
+        "t_000098",
+        "t_000134",
+        "t_000163"
+      ],
+      "first_charge": "2026-03-09",
+      "last_charge": "2026-08-10",
+      "next_charge_expected": "2026-09-09",
+      "status": "active",
+      "confidence": 0.99,
+      "flags": [
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 399.0,
+      "yearly_cost": 4788.0
+    },
+    {
+      "id": "s_005",
+      "name": "Иви",
+      "merchant_raw_variants": [
+        "IVI.RU MOSCOW RUS"
+      ],
+      "category": "video",
+      "period": "monthly",
+      "amount_current": 399.0,
+      "amount_history": [
+        {
+          "date": "2026-03-11",
+          "amount": 399.0
+        }
+      ],
+      "charges": [
+        "t_000009",
+        "t_000040",
+        "t_000070",
+        "t_000100",
+        "t_000137",
+        "t_000165"
+      ],
+      "first_charge": "2026-03-11",
+      "last_charge": "2026-08-11",
+      "next_charge_expected": "2026-09-10",
+      "status": "active",
+      "confidence": 0.98,
+      "flags": [
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 399.0,
+      "yearly_cost": 4788.0
+    },
+    {
+      "id": "s_006",
+      "name": "Кинопоиск",
+      "merchant_raw_variants": [
+        "KINOPOISK MOSCOW RUS",
+        "KINOPOISK HD"
+      ],
+      "category": "video",
+      "period": "monthly",
+      "amount_current": 399.0,
+      "amount_history": [
+        {
+          "date": "2026-03-02",
+          "amount": 399.0
+        }
+      ],
+      "charges": [
+        "t_000000",
+        "t_000030",
+        "t_000060",
+        "t_000092",
+        "t_000127",
+        "t_000154"
+      ],
+      "first_charge": "2026-03-02",
+      "last_charge": "2026-08-03",
+      "next_charge_expected": "2026-09-02",
+      "status": "active",
+      "confidence": 0.99,
+      "flags": [
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 399.0,
+      "yearly_cost": 4788.0
+    },
+    {
+      "id": "s_007",
+      "name": "Облако Mail.ru",
+      "merchant_raw_variants": [
+        "CLOUD.MAIL.RU MOSCOW RUS"
+      ],
+      "category": "cloud",
+      "period": "monthly",
+      "amount_current": 399.0,
+      "amount_history": [
+        {
+          "date": "2026-03-19",
+          "amount": 399.0
+        }
+      ],
+      "charges": [
+        "t_000016",
+        "t_000049",
+        "t_000080",
+        "t_000109",
+        "t_000144",
+        "t_000174"
+      ],
+      "first_charge": "2026-03-19",
+      "last_charge": "2026-08-19",
+      "next_charge_expected": "2026-09-18",
+      "status": "active",
+      "confidence": 0.99,
+      "flags": [
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 399.0,
+      "yearly_cost": 4788.0
+    },
+    {
+      "id": "s_008",
+      "name": "СберПрайм",
+      "merchant_raw_variants": [
+        "SBERPRIME MOSCOW RUS"
+      ],
+      "category": "ecosystem",
+      "period": "monthly",
+      "amount_current": 399.0,
+      "amount_history": [
+        {
+          "date": "2026-03-24",
+          "amount": 399.0
+        }
+      ],
+      "charges": [
+        "t_000023",
+        "t_000055",
+        "t_000088",
+        "t_000117",
+        "t_000147",
+        "t_000179"
+      ],
+      "first_charge": "2026-03-24",
+      "last_charge": "2026-08-24",
+      "next_charge_expected": "2026-09-23",
+      "status": "active",
+      "confidence": 0.99,
+      "flags": [],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 399.0,
+      "yearly_cost": 4788.0
+    },
+    {
+      "id": "s_009",
+      "name": "Яндекс Диск",
+      "merchant_raw_variants": [
+        "YANDEX.DISK MOSCOW RUS"
+      ],
+      "category": "cloud",
+      "period": "monthly",
+      "amount_current": 399.0,
+      "amount_history": [
+        {
+          "date": "2026-03-17",
+          "amount": 249.0
+        },
+        {
+          "date": "2026-06-17",
+          "amount": 399.0
+        }
+      ],
+      "charges": [
+        "t_000014",
+        "t_000044",
+        "t_000078",
+        "t_000106",
+        "t_000140",
+        "t_000169"
+      ],
+      "first_charge": "2026-03-17",
+      "last_charge": "2026-08-17",
+      "next_charge_expected": "2026-09-16",
+      "status": "active",
+      "confidence": 0.99,
+      "flags": [
+        "price_increase",
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 399.0,
+      "yearly_cost": 4788.0
+    },
+    {
+      "id": "s_010",
+      "name": "VK Музыка",
+      "merchant_raw_variants": [
+        "VK MUSIC MOSCOW RUS",
+        "ВК МУЗЫКА"
+      ],
+      "category": "music",
+      "period": "monthly",
+      "amount_current": 299.0,
+      "amount_history": [
+        {
+          "date": "2026-03-16",
+          "amount": 299.0
+        }
+      ],
+      "charges": [
+        "t_000013",
+        "t_000043",
+        "t_000075",
+        "t_000105",
+        "t_000139",
+        "t_000168"
+      ],
+      "first_charge": "2026-03-16",
+      "last_charge": "2026-08-17",
+      "next_charge_expected": "2026-09-16",
+      "status": "active",
+      "confidence": 0.99,
+      "flags": [
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 299.0,
+      "yearly_cost": 3588.0
+    },
+    {
+      "id": "s_011",
+      "name": "Звук",
+      "merchant_raw_variants": [
+        "ZVUK.COM MOSCOW",
+        "SBERZVUK"
+      ],
+      "category": "music",
+      "period": "monthly",
+      "amount_current": 299.0,
+      "amount_history": [
+        {
+          "date": "2026-03-13",
+          "amount": 299.0
+        }
+      ],
+      "charges": [
+        "t_000012",
+        "t_000041",
+        "t_000074",
+        "t_000104",
+        "t_000138",
+        "t_000166"
+      ],
+      "first_charge": "2026-03-13",
+      "last_charge": "2026-08-13",
+      "next_charge_expected": "2026-09-12",
+      "status": "active",
+      "confidence": 0.98,
+      "flags": [
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": null,
+        "confidence": null,
+        "reason": null
+      },
+      "monthly_cost": 299.0,
+      "yearly_cost": 3588.0
+    },
+    {
+      "id": "s_012",
+      "name": "iCloud 50 ГБ",
+      "merchant_raw_variants": [
+        "APPLE.COM/BILL ITUNES.COM"
+      ],
+      "category": "cloud",
+      "period": "monthly",
+      "amount_current": 199.0,
+      "amount_history": [
+        {
+          "date": "2026-03-27",
+          "amount": 199.0
+        }
+      ],
+      "charges": [
+        "t_000025",
+        "t_000057",
+        "t_000090",
+        "t_000121",
+        "t_000149",
+        "t_000180"
+      ],
+      "first_charge": "2026-03-27",
+      "last_charge": "2026-08-27",
+      "next_charge_expected": "2026-09-26",
+      "status": "active",
+      "confidence": 0.98,
+      "flags": [
+        "decoded",
+        "duplicate"
+      ],
+      "decoded": {
+        "guess": "iCloud 50 ГБ",
+        "confidence": 0.7,
+        "reason": "Списание 199 ₽ ежемесячно через APPLE.COM/BILL — типичная цена тарифа iCloud 50 ГБ"
+      },
+      "monthly_cost": 199.0,
+      "yearly_cost": 2388.0
+    }
+  ],
+  "insights": [
+    {
+      "type": "price_increase",
+      "subscription_ids": [
+        "s_009"
+      ],
+      "text": "«Яндекс Диск» подорожал с 249 ₽ до 399 ₽ (17.06.2026)"
+    },
+    {
+      "type": "duplicate",
+      "subscription_ids": [
+        "s_002",
+        "s_003",
+        "s_004",
+        "s_005",
+        "s_006"
+      ],
+      "text": "5 активных подписок категории «Видео»: «Premier», «Okko», «Start», «Иви», «Кинопоиск» — возможно, достаточно одной"
+    },
+    {
+      "type": "duplicate",
+      "subscription_ids": [
+        "s_007",
+        "s_009",
+        "s_012"
+      ],
+      "text": "3 активные подписки категории «Облако»: «Облако Mail.ru», «Яндекс Диск», «iCloud 50 ГБ» — возможно, достаточно одной"
+    },
+    {
+      "type": "duplicate",
+      "subscription_ids": [
+        "s_010",
+        "s_011"
+      ],
+      "text": "2 активные подписки категории «Музыка»: «VK Музыка», «Звук» — возможно, достаточно одной"
+    },
+    {
+      "type": "decoded",
+      "subscription_ids": [
+        "s_012"
+      ],
+      "text": "«APPLE.COM/BILL 199 ₽» расшифровано как iCloud 50 ГБ (уверенность 70 %)"
+    }
+  ]
+}
