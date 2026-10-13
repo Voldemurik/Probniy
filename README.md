@@ -10,6 +10,8 @@
 - Сайт (Vercel): https://website-final-ei2pk4hz1-ii-sche.vercel.app — актуальный адрес production-деплоя смотрите в панели Vercel проекта `website-final`
 - Проверка состояния бэкенда: `https://<домен>/api/v1/health?deep=1`
 
+Проект по SMARTER и ИКР можно посмотреть [здесь](https://github.com/Voldemurik/Probniy/blob/main/%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82_%D1%85%D0%B0%D0%BA%D0%B0%D1%82%D0%BE%D0%BD%D0%B0_SMARTER_%D0%B8_%D0%98%D0%9A%D0%A0.md).
+
 ---
 
 ## Как это выглядит для пользователя
