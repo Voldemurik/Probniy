@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd \"design/website final\" && npm install --no-audit --no-fund",
+  "buildCommand": "cd \"design/website final\" && npx vite build",
+  "outputDirectory": "design/website final/dist",
+  "functions": {
+    "api/index.py": { "maxDuration": 60 }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/docs", "destination": "/api/index" },
+    { "source": "/openapi.json", "destination": "/api/index" },
+    { "source": "/redoc", "destination": "/api/index" }
+  ]
+}
